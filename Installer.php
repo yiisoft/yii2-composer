@@ -22,6 +22,9 @@ class Installer extends LibraryInstaller
 	const EXTRA_BOOTSTRAP = 'bootstrap';
 	const EXTRA_WRITABLE = 'writable';
 	const EXTRA_EXECUTABLE = 'executable';
+    const EXTRA_COMMANDS = 'commands';
+    const EXTRA_CONFIG_FILE = 'config_file';
+    const EXTRA_YII2_PATH = 'yii2_path';
 
 	const EXTENSION_FILE = 'yiisoft/extensions.php';
 
@@ -179,4 +182,85 @@ class Installer extends LibraryInstaller
 			}
 		}
 	}
+
+
+    /**
+     * Console command parsing.
+     * @param string $commandLine
+     * @return array
+     */
+    public static function  parseCommandLine($commandLine)
+    {
+        $params = preg_split('/(--\w+=".*?"|".*?")/', $commandLine, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        $realParams = array();
+        foreach($params as $param)
+        {
+            $param = trim($param);
+            if ($param == '')
+                continue;
+
+            if (substr($param,0,2) === '--') {
+                $realParams = array_merge($realParams, array(trim($param)));
+            } elseif (strpos($param, '"') === 0) {
+                $realParams = array_merge($realParams, array(trim($param, '"')));
+            } else {
+                $realParams = array_merge($realParams, explode(' ', $param));
+            }
+        }
+
+        return $realParams;
+    }
+
+    /**
+     * Running console commands.
+     * Usage
+     * composer.json
+     {
+            "scripts": {
+                "post-update-cmd": "yii\\composer\\Installer::runCommands"
+            },
+            "extra": {
+                "yii2_path": "vendor/yiisoft/yii2/yii",
+                "config_file": "config/console.php",
+                "commands": [
+                    "hello \"test composer mess\"",
+                    "migrate"
+                ]
+            }
+     }
+     * @param CommandEvent $event
+     */
+    public static function runCommands($event)
+    {
+        $commands = ['migrate'];
+
+        $extra = $event->getComposer()->getPackage()->getExtra();
+
+        if(isset($extra[self::EXTRA_COMMANDS]))
+            $commands = $extra[self::EXTRA_COMMANDS];
+
+        defined('YII_DEBUG') or define('YII_DEBUG', true);
+
+        $vendorDir = rtrim($event->getComposer()->getConfig()->get('vendor-dir'), '/');
+
+        $configFile = $vendorDir . '/../config/console.php';
+        if(isset($extra[self::EXTRA_CONFIG_FILE]))
+            $configFile = $extra[self::EXTRA_CONFIG_FILE];
+
+        $configs = include $configFile;
+
+        $yiiPath = $vendorDir . '/yiisoft/yii2/yii/Yii.php';
+
+        if(isset($extra[self::EXTRA_YII2_PATH]))
+            $yiiPath = rtrim($extra[self::EXTRA_YII2_PATH], '/')."/Yii.php";
+
+        require_once($yiiPath);
+
+        $application = new \yii\console\Application($configs);
+
+        foreach($commands as $command){
+            $application->getRequest()->setParams(self::parseCommandLine($command));
+            $application->run();
+        }
+    }
 }
