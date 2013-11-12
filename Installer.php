@@ -189,7 +189,8 @@ class Installer extends LibraryInstaller
      * @param string $commandLine
      * @return array
      */
-    public static function  parseCommandLine($commandLine){
+    public static function  parseCommandLine($commandLine)
+    {
         $params = preg_split('/(--\w+=".*?"|".*?")/', $commandLine, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         $realParams = array();
         foreach($params as $param)
@@ -198,12 +199,13 @@ class Installer extends LibraryInstaller
             if ($param == '')
                 continue;
 
-            if (substr($param,0,2) === '--')
+            if (substr($param,0,2) === '--') {
                 $realParams = array_merge($realParams, array(trim($param)));
-            elseif (strpos($param, '"') === 0)
+            } elseif (strpos($param, '"') === 0) {
                 $realParams = array_merge($realParams, array(trim($param, '"')));
-            else
+            } else {
                 $realParams = array_merge($realParams, explode(' ', $param));
+            }
         }
 
         return $realParams;
@@ -228,14 +230,14 @@ class Installer extends LibraryInstaller
      }
      * @param CommandEvent $event
      */
-    public static function runCommands($event){
+    public static function runCommands($event)
+    {
         $commands = ['migrate'];
 
         $extra = $event->getComposer()->getPackage()->getExtra();
 
-        if(isset($extra[self::EXTRA_COMMANDS])){
+        if(isset($extra[self::EXTRA_COMMANDS]))
             $commands = $extra[self::EXTRA_COMMANDS];
-        }
 
         defined('YII_DEBUG') or define('YII_DEBUG', true);
 
@@ -249,9 +251,8 @@ class Installer extends LibraryInstaller
 
         $yiiPath = $vendorDir . '/yiisoft/yii2/yii/Yii.php';
 
-        if(isset($extra[self::EXTRA_YII2_PATH])){
+        if(isset($extra[self::EXTRA_YII2_PATH]))
             $yiiPath = rtrim($extra[self::EXTRA_YII2_PATH], '/')."/Yii.php";
-        }
 
         require_once($yiiPath);
 
