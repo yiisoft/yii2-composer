@@ -1,70 +1,63 @@
-Yii PHP Framework Version 2
-===========================
+Yii 2 Composer Installer
+========================
 
-Thank you for choosing Yii 2 - a modern PHP framework designed for professional Web development.
-
-Yii 2 is a complete rewrite of its previous version Yii 1.1 which is one of the most popular PHP frameworks.
-Yii 2 inherits the main spirit behind Yii for being simple, fast and highly extensible.
-Yii 2 requires PHP 5.4 and embraces best practices and protocols found in modern Web application development.
+This is the composer installer for Yii 2 extensions. It implements a new composer package type named `yii2-extension`,
+which should be used by all Yii 2 extensions if they are distributed as composer packages.
 
 
-**Yii 2 is not ready for production use yet.** We may make significant changes without prior notices.
-We expect to make the first stable release of Yii 2 in early 2014.
+Usage
+-----
 
-If you mainly want to learn Yii with no real project development requirement, we highly recommend
-you start with Yii 2 as it will be our main focus for the next few years.
+To use Yii 2 composer installer, simply set `type` to be `yii2-extension` in your `composer.json`,
+like the following:
 
-If you have a real project with tight schedule, you should stick to [Yii 1.1](https://github.com/yiisoft/yii)
-which is the latest stable release of Yii.
+```json
+{
+	"type": "yii2-extension",
+	"require": {
+		"yiisoft/yii2": "*"
+	},
+	...
+}
+```
 
+You may specify a bootstrap class in the `extra` section. The `init()` method of the class will be executed each time
+the Yii 2 application is responding to a request. For example,
 
-[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
-[![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2)
-[![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2)
-[![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
+```json
+{
+	"type": "yii2-extension",
+	...,
+	"extra": {
+		"bootstrap": "yii\\jui\\Extension"
+	}
+}
+```
 
+The `Installer` class also implements a static method `setPermission()` that can be called after
+a Yii 2 projected is installed, through the `post-create-project-cmd` composer script.
+The method will set specified directories or files to be writable or executable, depending on
+the corresponding parameters set in the `extra` section of the `composer.json` file.
+For example,
 
-DIRECTORY STRUCTURE
--------------------
-
-      apps/                ready-to-use application templates
-          advanced/        a template suitable for building sophisticated Web applications
-          basic/           a template suitable for building simple Web applications
-          benchmark/       an application demonstrating the performance of Yii
-      build/               internally used build tools
-      docs/                documentation
-      extensions/          extensions
-      framework/           core framework code
-      tests/               tests of the core framework code
-
-
-REQUIREMENTS
-------------
-
-The minimum requirement by Yii is that your Web server supports PHP 5.4.
-
-
-DOCUMENTATION
--------------
-
-A draft of the [Definitive Guide](docs/guide/index.md) is available.
-
-For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/upgrade-from-v1.md)
-to have a general idea of what has changed in 2.0.
-
-
-HOW TO PARTICIPATE
-------------------
-
-**Your participation to Yii 2 development is very welcome!**
-
-You may participate in the following ways:
-
-* [Report issues](https://github.com/yiisoft/yii2/issues)
-* [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-design-discussions-for-yii-20/)
-* Fix issues, develop features, write/polish documentation
-    - Before you start, please adopt an existing issue (labelled with "ready for adoption") or start a new one to avoid duplicated efforts.
-    - Please submit a merge request after you finish development.
-
-In order to make it easier we've prepared [special `yii2-dev` Composer package](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md).
-
+```json
+{
+	"name": "yiisoft/yii2-app-basic",
+	"type": "project",
+	...
+	"scripts": {
+		"post-create-project-cmd": [
+			"yii\\composer\\Installer::setPermission"
+		]
+	},
+	"extra": {
+		"writable": [
+			"runtime",
+			"web/assets"
+		],
+		"executable": [
+			"yii"
+		]
+	}
+}
+```
