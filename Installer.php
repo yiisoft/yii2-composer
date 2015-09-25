@@ -248,8 +248,13 @@ EOF
         foreach ($paths as $path => $permission) {
             echo "chmod('$path', $permission)...";
             if (is_dir($path) || is_file($path)) {
-                chmod($path, octdec($permission));
-                echo "done.\n";
+                try {
+                    if (chmod($path, octdec($permission))) {
+                        echo "done.\n";
+                    };
+                } catch (\Exception $e) {
+                    echo $e->getMessage() . "\n";
+                }
             } else {
                 echo "file not found.\n";
             }
