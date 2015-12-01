@@ -151,7 +151,7 @@ class Installer extends LibraryInstaller
 
     protected function loadExtensions()
     {
-        $file = $this->vendorDir . '/' . self::EXTENSION_FILE;
+        $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
         if (!is_file($file)) {
             return [];
         }
@@ -180,7 +180,7 @@ class Installer extends LibraryInstaller
 
     protected function saveExtensions(array $extensions)
     {
-        $file = $this->vendorDir . '/' . self::EXTENSION_FILE;
+        $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
         if (!file_exists(dirname($file))) {
             mkdir(dirname($file), 0777, true);
         }
