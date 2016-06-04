@@ -228,12 +228,22 @@ EOF
             rmdir($yiiDir);
         }
     }
-    
+
+    public static function postInstall($event)
+    {
+        static::runCommands($event, __METHOD__);
+    }
+
     public static function postCreateProject($event)
     {
+        static::runCommands($event, __METHOD__);
+    }
+
+    protected static function runCommands($event, $extraKey)
+    {
         $params = $event->getComposer()->getPackage()->getExtra();
-        if (isset($params[__METHOD__]) && is_array($params[__METHOD__])) {
-            foreach ($params[__METHOD__] as $method => $args) {
+        if (isset($params[$extraKey]) && is_array($params[$extraKey])) {
+            foreach ($params[$extraKey] as $method => $args) {
                 call_user_func_array([__CLASS__, $method], (array) $args);
             }
         }
