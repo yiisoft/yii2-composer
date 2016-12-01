@@ -54,6 +54,9 @@ For example,
     "scripts": {
         "post-create-project-cmd": [
             "yii\\composer\\Installer::postCreateProject"
+        ],
+        "post-install-cmd": [
+            "yii\\composer\\Installer::postInstall"
         ]
     },
     "extra": {
@@ -64,7 +67,9 @@ For example,
                     "web/assets": "0777",
                     "yii": "0755"
                 }
-            ],
+            ]
+        },
+        "yii\\composer\\Installer::postInstall": {
             "generateCookieValidationKey": [
                 "config/web.php"
             ]
