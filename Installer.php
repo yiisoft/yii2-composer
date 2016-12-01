@@ -324,6 +324,7 @@ EOF
      * for copied files (values). Location can be specified as an array - first element is target
      * location, second defines whether file can be overwritten (by default method don't overwrite
      * existing files).
+     * @since 2.0.5
      */
     public static function copyFiles(array $paths)
     {
