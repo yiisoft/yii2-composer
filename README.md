@@ -40,10 +40,10 @@ the Yii 2 application is responding to a request. For example,
 }
 ```
 
-The `Installer` class also implements a static method `setPermission()` that can be called after
-a Yii 2 projected is installed, through the `post-create-project-cmd` composer script.
-The method will set specified directories or files to be writable or executable, depending on
-the corresponding parameters set in the `extra` section of the `composer.json` file.
+The `Installer` class also implements a static method `postCreateProject()` that can be called after
+a Yii 2 project is created, through the `post-create-project-cmd` composer script.
+The method allows to run other `Installer` class methods like `setPermission()` or `generateCookieValidationKey()`, 
+depending on the corresponding parameters set in the `extra` section of the `composer.json` file.
 For example,
 
 ```json
@@ -53,17 +53,27 @@ For example,
     ...
     "scripts": {
         "post-create-project-cmd": [
-            "yii\\composer\\Installer::setPermission"
+            "yii\\composer\\Installer::postCreateProject"
+        ],
+        "post-install-cmd": [
+            "yii\\composer\\Installer::postInstall"
         ]
     },
     "extra": {
-        "writable": [
-            "runtime",
-            "web/assets"
-        ],
-        "executable": [
-            "yii"
-        ]
+        "yii\\composer\\Installer::postCreateProject": {
+            "setPermission": [
+                {
+                    "runtime": "0777",
+                    "web/assets": "0777",
+                    "yii": "0755"
+                }
+            ]
+        },
+        "yii\\composer\\Installer::postInstall": {
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        }
     }
 }
 ```
