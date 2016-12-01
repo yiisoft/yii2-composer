@@ -11,6 +11,7 @@ use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Script\CommandEvent;
+use Composer\Script\Event;
 use Composer\Util\Filesystem;
 
 /**
@@ -229,16 +230,34 @@ EOF
         }
     }
 
-    public static function postInstall($event)
-    {
-        static::runCommands($event, __METHOD__);
-    }
-
+    /**
+     * Special method to run tasks defined in `[extra][yii\composer\Installer::postCreateProject]` key in `composer.json`
+     *
+     * @param Event $event
+     */
     public static function postCreateProject($event)
     {
         static::runCommands($event, __METHOD__);
     }
 
+    /**
+     * Special method to run tasks defined in `[extra][yii\composer\Installer::postInstall]` key in `composer.json`
+     *
+     * @param Event $event
+     * @since 2.0.5
+     */
+    public static function postInstall($event)
+    {
+        static::runCommands($event, __METHOD__);
+    }
+
+    /**
+     * Special method to run tasks defined in `[extra][$extraKey]` key in `composer.json`
+     *
+     * @param Event $event
+     * @param string $extraKey
+     * @since 2.0.5
+     */
     protected static function runCommands($event, $extraKey)
     {
         $params = $event->getComposer()->getPackage()->getExtra();
