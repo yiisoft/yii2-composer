@@ -70,8 +70,16 @@ For example,
             ]
         },
         "yii\\composer\\Installer::postInstall": {
+            "copyFiles": [
+                {
+                    "config/templates/console-local.php": "config/console-local.php",
+                    "config/templates/web-local.php": "config/web-local.php",
+                    "config/templates/db-local.php": "config/db-local.php",
+                    "config/templates/cache.json": ["runtime/cache.json", true]
+                }
+            ],
             "generateCookieValidationKey": [
-                "config/web.php"
+                "config/web-local.php"
             ]
         }
     }

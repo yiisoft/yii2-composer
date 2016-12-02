@@ -317,4 +317,44 @@ EOF
         $bytes = openssl_random_pseudo_bytes($length);
         return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
     }
+
+    /**
+     * Copy files to specified locations.
+     * @param array $paths The source files paths (keys) and the corresponding target locations
+     * for copied files (values). Location can be specified as an array - first element is target
+     * location, second defines whether file can be overwritten (by default method don't overwrite
+     * existing files).
+     * @since 2.0.5
+     */
+    public static function copyFiles(array $paths)
+    {
+        foreach ($paths as $source => $target) {
+            // handle file target as array [path, overwrite]
+            $target = (array) $target;
+            echo "Copying file $source to $target[0] - ";
+
+            if (!is_file($source)) {
+                echo "source file not found.\n";
+                continue;
+            }
+
+            if (is_file($target[0]) && empty($target[1])) {
+                echo "target file exists - skip.\n";
+                continue;
+            } elseif (is_file($target[0]) && !empty($target[1])) {
+                echo "target file exists - overwrite - ";
+            }
+
+            try {
+                if (!is_dir(dirname($target[0]))) {
+                    mkdir(dirname($target[0]), 0777, true);
+                }
+                if (copy($source, $target[0])) {
+                    echo "done.\n";
+                }
+            } catch (\Exception $e) {
+                echo $e->getMessage() . "\n";
+            }
+        }
+    }
 }
