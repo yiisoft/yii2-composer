@@ -4,8 +4,8 @@ Yii Framework 2 composer extension Change Log
 2.0.5 under development
 -----------------------
 
-- Enh #10: Added `yii\composer\Installer::postInstall()` method (rob006)
 - Bug #11: `generateCookieValidationKey()` now saves config file only when `cookieValidationKey` was generated (rob006)
+- Enh #10: Added `yii\composer\Installer::postInstall()` method (rob006)
 - Enh #12: Added `yii\composer\Installer::copyFiles()` method (rob006)
 
 
