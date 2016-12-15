@@ -117,14 +117,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         // print the relevant upgrade notes for the upgrade
         // - only on upgrade, not on downgrade
         // - only if the "from" version is non-dev, otherwise we have no idea which notes to show
-        if ($package['direction'] === 'up' && preg_match('~^([0-9]\.[0-9]+\.[0-9]+)~', $package['fromPretty'])) {
+        if ($package['direction'] === 'up' && $this->isNumericVersion($package['fromPretty'])) {
 
             $notes = $this->findUpgradeNotes('yiisoft/yii2', $package['fromPretty']);
             if ($notes) {
                 // safety check: do not display notes if they are too many
                 if (count($notes) > 250) {
                     $io->write("\n  <fg=yellow;options=bold>The relevant notes for your upgrade contain more than 250 lines,</>");
-                    $io->write("\n  <fg=yellow;options=bold>so they have not been displayed here.</>");
+                    $io->write("  <fg=yellow;options=bold>so they have not been displayed here.</>");
                 } else {
                     $io->write("\n  " . trim(implode("\n  ", $notes)));
                 }
@@ -157,16 +157,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $lines = preg_split('~\R~', file_get_contents($upgradeFile));
         $relevantLines = [];
         $consuming = false;
-        $lastBlock = false;
         foreach($lines as $line) {
-            if (preg_match('/^Upgrade from Yii ([0-9]\.[0-9]+\.[0-9]+)/i', $line, $matches)) {
-                if ($lastBlock) {
+            if (preg_match('/^Upgrade from Yii ([0-9]\.[0-9]+\.?[0-9]*)/i', $line, $matches)) {
+                if (version_compare($matches[1], $fromVersion, '<')) {
                     break;
                 }
                 $consuming = true;
-                if (strpos($fromVersion, $matches[1]) === 0) {
-                    $lastBlock = true;
-                }
             }
             if ($consuming) {
                 $relevantLines[] = $line;
