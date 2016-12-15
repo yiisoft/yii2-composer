@@ -106,20 +106,19 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         $io = $event->getIO();
 
-        $io->write("\n  <fg=yellow;options=bold>Seems you have "
-            . ($package['direction'] === 'up' ? 'upgraded' : 'downgraded')
-            . ' Yii Framework from version '
-            . $package['fromPretty'] . ' to ' . $package['toPretty'] . '.</>'
-        );
-        $io->write("\n  <options=bold>Please check the upgrade notes for possible incompatible changes");
-        $io->write('  and adjust your application code accordingly.</>');
-
         // print the relevant upgrade notes for the upgrade
         // - only on upgrade, not on downgrade
         // - only if the "from" version is non-dev, otherwise we have no idea which notes to show
         if ($package['direction'] === 'up' && $this->isNumericVersion($package['fromPretty'])) {
 
-            $notes = $this->findUpgradeNotes('yiisoft/yii2', $package['fromPretty']);
+            $notes = $this->findUpgradeNotes($packageName, $package['fromPretty']);
+            if ($notes !== false && empty($notes)) {
+                // no relevent upgrade notes, do not show anything.
+                return;
+            }
+
+            $this->printUpgradeIntro($io, $package);
+
             if ($notes) {
                 // safety check: do not display notes if they are too many
                 if (count($notes) > 250) {
@@ -132,6 +131,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
             $io->write("\n  You can find the upgrade notes for all versions online at:");
         } else {
+            $this->printUpgradeIntro($io, $package);
             $io->write("\n  You can find the upgrade notes online at:");
         }
         $maxVersion = $package['direction'] === 'up' ? $package['toPretty'] : $package['fromPretty'];
@@ -140,6 +140,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $maxVersion = 'master';
         }
         $io->write("  https://github.com/yiisoft/yii2/blob/$maxVersion/framework/UPGRADE.md\n");
+    }
+
+    /**
+     * @param IOInterface $io
+     * @param array $package
+     */
+    private function printUpgradeIntro($io, $package)
+    {
+        $io->write("\n  <fg=yellow;options=bold>Seems you have "
+            . ($package['direction'] === 'up' ? 'upgraded' : 'downgraded')
+            . ' Yii Framework from version '
+            . $package['fromPretty'] . ' to ' . $package['toPretty'] . '.</>'
+        );
+        $io->write("\n  <options=bold>Please check the upgrade notes for possible incompatible changes");
+        $io->write('  and adjust your application code accordingly.</>');
     }
 
     /**
