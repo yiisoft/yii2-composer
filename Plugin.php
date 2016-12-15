@@ -122,8 +122,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             if ($notes) {
                 // safety check: do not display notes if they are too many
                 if (count($notes) > 250) {
-                    $io->write("\n  <fg=yellow;options=bold>The relevant notes for your upgrade contain more than 250 lines,</>");
-                    $io->write("  <fg=yellow;options=bold>so they have not been displayed here.</>");
+                    $io->write("\n  <fg=yellow;options=bold>The relevant notes for your upgrade are too long to be displayed here.</>");
                 } else {
                     $io->write("\n  " . trim(implode("\n  ", $notes)));
                 }
@@ -134,6 +133,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $this->printUpgradeIntro($io, $package);
             $io->write("\n  You can find the upgrade notes online at:");
         }
+        $this->printUpgradeLink($io, $package);
+    }
+
+    /**
+     * Print link to upgrade notes
+     * @param IOInterface $io
+     * @param array $package
+     */
+    private function printUpgradeLink($io, $package)
+    {
         $maxVersion = $package['direction'] === 'up' ? $package['toPretty'] : $package['fromPretty'];
         // make sure to always show a valid link, even if $maxVersion is something like dev-master
         if (!$this->isNumericVersion($maxVersion)) {
@@ -194,6 +203,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private function isNumericVersion($version)
     {
-        return preg_match('~^([0-9]\.[0-9]+\.[0-9]+)~', $version);
+        return preg_match('~^([0-9]\.[0-9]+\.?[0-9]*)~', $version);
     }
 }
