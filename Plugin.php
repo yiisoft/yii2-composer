@@ -29,6 +29,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * @var array noted package updates.
      */
     private $_packageUpdates = [];
+    /**
+     * @var string path to the vendor directory.
+     */
+    private $_vendorDir;
+
 
     /**
      * @inheritdoc
@@ -37,7 +42,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $installer = new Installer($io, $composer);
         $composer->getInstallationManager()->addInstaller($installer);
-        $file = rtrim($composer->getConfig()->get('vendor-dir'), '/') . '/yiisoft/extensions.php';
+        $this->_vendorDir = rtrim($composer->getConfig()->get('vendor-dir'), '/');
+        $file = $this->_vendorDir . '/yiisoft/extensions.php';
         if (!is_file($file)) {
             @mkdir(dirname($file), 0777, true);
             file_put_contents($file, "<?php\n\nreturn [];\n");
@@ -85,21 +91,97 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function showUpgradeNotes(Script\Event $event)
     {
-        if (isset($this->_packageUpdates['yiisoft/yii2'])) {
-
-            $package = $this->_packageUpdates['yiisoft/yii2'];
-
-            $io = $event->getIO();
-
-            $io->write("\n  Seems you have "
-                . ($package['direction'] === 'up' ? 'upgraded' : 'downgraded')
-                . ' Yii Framework from version '
-                . $package['fromPretty'] . ' to ' . $package['toPretty'] . '.'
-            );
-            $io->write("\n  Please check the upgrade notes for possible incompatible changes");
-            $io->write('  and adjust your application code accordingly.');
-            $maxVersion = $package['direction'] === 'up' ? $package['toPretty'] : $package['fromPretty'];
-            $io->write("\n  Here is a link: https://github.com/yiisoft/yii2/blob/$maxVersion/framework/UPGRADE.md\n");
+        $packageName = 'yiisoft/yii2';
+        if (!isset($this->_packageUpdates[$packageName])) {
+            return;
         }
+
+        $package = $this->_packageUpdates['yiisoft/yii2'];
+
+        // do not show a notice on up/downgrades between dev versions
+        // avoid messages like from version dev-master to dev-master
+        if ($package['fromPretty'] == $package['toPretty']) {
+            return;
+        }
+
+        $io = $event->getIO();
+
+        $io->write("\n  <fg=yellow;options=bold>Seems you have "
+            . ($package['direction'] === 'up' ? 'upgraded' : 'downgraded')
+            . ' Yii Framework from version '
+            . $package['fromPretty'] . ' to ' . $package['toPretty'] . '.</>'
+        );
+        $io->write("\n  <options=bold>Please check the upgrade notes for possible incompatible changes");
+        $io->write('  and adjust your application code accordingly.</>');
+
+        // print the relevant upgrade notes for the upgrade
+        // - only on upgrade, not on downgrade
+        // - only if the "from" version is non-dev, otherwise we have no idea which notes to show
+        if ($package['direction'] === 'up' && preg_match('~^([0-9]\.[0-9]+\.[0-9]+)~', $package['fromPretty'])) {
+
+            $notes = $this->findUpgradeNotes('yiisoft/yii2', $package['fromPretty']);
+            if ($notes) {
+                // safety check: do not display notes if they are too many
+                if (count($notes) > 250) {
+                    $io->write("\n  <fg=yellow;options=bold>The relevant notes for your upgrade contain more than 250 lines,</>");
+                    $io->write("\n  <fg=yellow;options=bold>so they have not been displayed here.</>");
+                } else {
+                    $io->write("\n  " . trim(implode("\n  ", $notes)));
+                }
+            }
+
+            $io->write("\n  You can find the upgrade notes for all versions online at:");
+        } else {
+            $io->write("\n  You can find the upgrade notes online at:");
+        }
+        $maxVersion = $package['direction'] === 'up' ? $package['toPretty'] : $package['fromPretty'];
+        // make sure to always show a valid link, even if $maxVersion is something like dev-master
+        if (!$this->isNumericVersion($maxVersion)) {
+            $maxVersion = 'master';
+        }
+        $io->write("  https://github.com/yiisoft/yii2/blob/$maxVersion/framework/UPGRADE.md\n");
+    }
+
+    /**
+     * Read upgrade notes from a files and returns an array of lines
+     * @param string $packageName
+     * @param string $fromVersion until which version to read the notes
+     * @return array|false
+     */
+    private function findUpgradeNotes($packageName, $fromVersion)
+    {
+        $upgradeFile = $this->_vendorDir . '/' . $packageName . '/UPGRADE.md';
+        if (!is_file($upgradeFile) || !is_readable($upgradeFile)) {
+            return false;
+        }
+        $lines = preg_split('~\R~', file_get_contents($upgradeFile));
+        $relevantLines = [];
+        $consuming = false;
+        $lastBlock = false;
+        foreach($lines as $line) {
+            if (preg_match('/^Upgrade from Yii ([0-9]\.[0-9]+\.[0-9]+)/i', $line, $matches)) {
+                if ($lastBlock) {
+                    break;
+                }
+                $consuming = true;
+                if (strpos($fromVersion, $matches[1]) === 0) {
+                    $lastBlock = true;
+                }
+            }
+            if ($consuming) {
+                $relevantLines[] = $line;
+            }
+        }
+        return $relevantLines;
+    }
+
+    /**
+     * Check whether a version is numeric, e.g. 2.0.10.
+     * @param string $version
+     * @return int|false
+     */
+    private function isNumericVersion($version)
+    {
+        return preg_match('~^([0-9]\.[0-9]+\.[0-9]+)~', $version);
     }
 }
