@@ -14,14 +14,16 @@ For license information check the [LICENSE](LICENSE.md)-file.
 Usage
 -----
 
-To use Yii 2 composer installer, simply set `type` to be `yii2-extension` in your `composer.json`,
+The Yii 2 Composer Installer is automatically installed with when installing the framework via Composer.
+
+To use Yii 2 composer installer, simply set the package `type` to be `yii2-extension` in your `composer.json`,
 like the following:
 
 ```json
 {
     "type": "yii2-extension",
     "require": {
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "~2.0.0"
     },
     ...
 }
@@ -42,7 +44,8 @@ the Yii 2 application is responding to a request. For example,
 
 The `Installer` class also implements a static method `postCreateProject()` that can be called after
 a Yii 2 project is created, through the `post-create-project-cmd` composer script.
-The method allows to run other `Installer` class methods like `setPermission()` or `generateCookieValidationKey()`, 
+A similar method exists for running tasks after each `composer install` call, which sis `postInstall()`.
+These methods allow to run other `Installer` class methods like `setPermission()` or `generateCookieValidationKey()`, 
 depending on the corresponding parameters set in the `extra` section of the `composer.json` file.
 For example,
 
