@@ -1,7 +1,7 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
-2.0.5 under development
+2.0.5 December 20, 2016
 -----------------------
 
 - Bug #11: `generateCookieValidationKey()` now saves config file only when `cookieValidationKey` was generated (rob006)

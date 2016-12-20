@@ -152,7 +152,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Print upgrade intro    
+     * Print upgrade intro
      * @param IOInterface $io
      * @param array $package
      */
