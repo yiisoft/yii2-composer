@@ -1,5 +1,10 @@
-Yii 2 Composer Installer
-========================
+<p align="center">
+    <a href="https://getcomposer.org/" target="_blank" rel="external">
+        <img src="https://getcomposer.org/img/logo-composer-transparent3.png" height="178px">
+    </a>
+    <h1 align="center">Yii 2 Composer Installer</h1>
+    <br>
+</p>
 
 This is the composer installer for [Yii framework 2.0](http://www.yiiframework.com) extensions.
 It implements a new composer package type named `yii2-extension`,
