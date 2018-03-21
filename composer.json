@@ -30,6 +30,9 @@
     "autoload": {
         "psr-4": { "yii\\composer\\": "" }
     },
+    "autoload-dev": {
+        "psr-4": { "tests\\": "tests" }
+    },
     "extra": {
         "class": "yii\\composer\\Plugin",
         "branch-alias": {

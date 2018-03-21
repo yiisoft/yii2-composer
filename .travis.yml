@@ -1,0 +1,48 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - nightly
+
+matrix:
+  include:
+  - php: hhvm
+    sudo: true
+    dist: trusty
+    group: edge
+    cache:
+      directories: "$HOME/.composer/cache"
+    before_install:
+    - wget https://phar.phpunit.de/phpunit-4.5.1.phar
+    script:
+    - php phpunit-4.5.1.phar --verbose $PHPUNIT_FLAGS
+
+sudo: false
+
+# cache vendor dirs
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.bin
+
+install:
+  - travis_retry composer self-update && composer --version
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - travis_retry composer install --prefer-dist --no-interaction
+
+before_script:
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      PHPUNIT_FLAGS="--coverage-clover=clover.xml"
+    else
+      phpenv config-rm xdebug.ini || return 0
+    fi
+
+script:
+  - phpunit --verbose $PHPUNIT_FLAGS
+
