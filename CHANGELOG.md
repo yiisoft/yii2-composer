@@ -4,7 +4,7 @@ Yii Framework 2 composer extension Change Log
 2.0.7 under development
 -----------------------
 
-- no changes in this release.
+- Fixed an error that would occur if the Zend OPcache extension was installed, but its "restrict_api" setting was enabled. 
 
 
 2.0.6 March 21, 2018
