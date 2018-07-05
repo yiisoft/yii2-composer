@@ -1,6 +1,12 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
+2.0.8 under development
+-----------------------
+
+- no changes in this release.
+
+
 2.0.7 July 05, 2018
 -------------------
 
