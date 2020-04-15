@@ -1,10 +1,10 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
-2.0.9 under development
+2.1.0 under development
 -----------------------
 
-- no changes in this release.
+- Enh #27: Support for Composer 2 (brandonkelly)
 
 
 2.0.8 July 16, 2019
