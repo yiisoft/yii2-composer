@@ -26,6 +26,10 @@ use Composer\Script\ScriptEvents;
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
     /**
+     * @var Installer
+     */
+    private $_installer;
+    /**
      * @var array noted package updates.
      */
     private $_packageUpdates = [];
@@ -40,14 +44,29 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function activate(Composer $composer, IOInterface $io)
     {
-        $installer = new Installer($io, $composer);
-        $composer->getInstallationManager()->addInstaller($installer);
+        $this->_installer = new Installer($io, $composer);
+        $composer->getInstallationManager()->addInstaller($this->_installer);
         $this->_vendorDir = rtrim($composer->getConfig()->get('vendor-dir'), '/');
         $file = $this->_vendorDir . '/yiisoft/extensions.php';
         if (!is_file($file)) {
             @mkdir(dirname($file), 0777, true);
             file_put_contents($file, "<?php\n\nreturn [];\n");
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+        $composer->getInstallationManager()->removeInstaller($this->_installer);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
     }
 
     /**
