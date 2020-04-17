@@ -1,9 +1,11 @@
 This directory contains scripts to run composer with the yii2-composer plugin.
 
-Run the tests:
+### Run the tests
 
     sh run.sh
 
-Choose a different composer version by setting the environment variable:
+### Files
 
-    COMPOSER_VERSION=2.0 sh run.sh
+- `run.sh` runs all the `test_*.sh` files and print the results.
+- `make_composer_json.php` generates a `composer.json` file that instructs composer to load the plugin from the current directory.
+  This approach is explained at <https://blog.cebe.cc/posts/2020-04-17/testing-composer-plugins>.
