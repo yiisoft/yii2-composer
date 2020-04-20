@@ -13,6 +13,7 @@ use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
+use Composer\Package\Version\VersionParser;
 use Composer\Plugin\PluginInterface;
 use Composer\Script;
 use Composer\Script\ScriptEvents;
@@ -95,13 +96,31 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 'fromPretty' => $operation->getInitialPackage()->getPrettyVersion(),
                 'to' => $operation->getTargetPackage()->getVersion(),
                 'toPretty' => $operation->getTargetPackage()->getPrettyVersion(),
-                'direction' => $event->getPolicy()->versionCompare(
-                    $operation->getInitialPackage(),
-                    $operation->getTargetPackage(),
-                    '<'
-                ) ? 'up' : 'down',
+                'direction' => $this->_isUpgrade($event, $operation) ? 'up' : 'down',
             ];
         }
+    }
+
+    /**
+     * @param PackageEvent $event
+     * @param UpdateOperation $operation
+     * @return bool
+     */
+    private function _isUpgrade(PackageEvent $event, UpdateOperation $operation)
+    {
+        // Composer 1.7.0+
+        if (method_exists('Composer\Package\Version\VersionParser', 'isUpgrade')) {
+            return VersionParser::isUpgrade(
+                $operation->getInitialPackage()->getVersion(),
+                $operation->getTargetPackage()->getVersion()
+            );
+        }
+
+        return $event->getPolicy()->versionCompare(
+            $operation->getInitialPackage(),
+            $operation->getTargetPackage(),
+            '<'
+        );
     }
 
     /**
