@@ -1,11 +1,11 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
-2.0.9 under development
------------------------
+2.0.9 April 20, 2020
+--------------------
 
-- Enh #27: Support for Composer 2 (brandonkelly, cebe)
 - Bug #30: Fix PHP error when upgrading/downgrading a Yii2 extension (brandonkelly)
+- Enh #27: Support for Composer 2 (brandonkelly, cebe)
 
 
 2.0.8 July 16, 2019
