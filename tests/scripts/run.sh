@@ -13,7 +13,7 @@ find . -type f | grep -vP '^./.git|^./tests|^./vendor' | zip "$PLUGIN_SOURCE" -@
 cd $TESTDIR
 
 # run tests
-for TESTCASE in "test_install" ; do
+for TESTCASE in "test_install" "test_upgrade" ; do
     rm -rf ./run/$TESTCASE/
     mkdir -p ./run/$TESTCASE/
     cp ./$TESTCASE.sh ./run/$TESTCASE/$TESTCASE.sh
