@@ -13,6 +13,7 @@ use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Script\CommandEvent;
 use Composer\Script\Event;
 use Composer\Util\Filesystem;
+use React\Promise\PromiseInterface;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
