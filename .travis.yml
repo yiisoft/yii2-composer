@@ -104,7 +104,7 @@ before_script:
     fi
   - |
     if [ $COMPOSER_VERSION = 2 ] ; then
-      composer require --dev "composer/composer:^2.0@dev" "composer/semver:^2.0@dev" --update-with-dependencies
+      composer require --dev "composer/composer:^2.0@dev" --update-with-dependencies
     else
       composer require --dev "composer/composer:$COMPOSER_VERSION" --update-with-dependencies
     fi
