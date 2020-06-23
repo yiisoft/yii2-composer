@@ -5,23 +5,34 @@
     "type": "composer-plugin",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
+        "issues": "https://github.com/yiisoft/yii2-composer/issues",
         "forum": "http://www.yiiframework.com/forum/",
         "wiki": "http://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
+        "source": "https://github.com/yiisoft/yii2-composer"
     },
     "authors": [
         {
             "name": "Qiang Xue",
             "email": "qiang.xue@gmail.com"
+        },
+        {
+            "name": "Carsten Brandt",
+            "email": "mail@cebe.cc"
         }
     ],
     "require": {
-        "composer-plugin-api": "1.0.0"
+        "composer-plugin-api": "^1.0 | ^2.0"
+    },
+    "require-dev": {
+        "composer/composer": "^1.0 | ^2.0@dev",
+        "phpunit/phpunit": "<7"
     },
     "autoload": {
         "psr-4": { "yii\\composer\\": "" }
+    },
+    "autoload-dev": {
+        "psr-4": { "tests\\": "tests" }
     },
     "extra": {
         "class": "yii\\composer\\Plugin",
