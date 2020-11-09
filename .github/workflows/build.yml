@@ -2,7 +2,7 @@ on:
   - pull_request
   - push
 
-name: composer-2
+name: build
 
 jobs:
   tests:
