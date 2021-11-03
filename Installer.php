@@ -23,7 +23,7 @@ class Installer extends LibraryInstaller
 {
     const EXTRA_BOOTSTRAP = 'bootstrap';
     const EXTENSION_FILE = 'yiisoft/extensions.php';
-
+    const DEV_PACKAGE = 'yiisoft/yii2-dev';
 
     /**
      * @inheritdoc
@@ -42,7 +42,7 @@ class Installer extends LibraryInstaller
             // add the package to yiisoft/extensions.php
             $this->addPackage($package);
             // ensure the yii2-dev package also provides Yii.php in the same place as yii2 does
-            if ($package->getName() == 'yiisoft/yii2-dev') {
+            if ($package->getName() === self::DEV_PACKAGE) {
                 $this->linkBaseYiiFiles();
             }
         };
@@ -68,7 +68,7 @@ class Installer extends LibraryInstaller
             $this->removePackage($initial);
             $this->addPackage($target);
             // ensure the yii2-dev package also provides Yii.php in the same place as yii2 does
-            if ($initial->getName() == 'yiisoft/yii2-dev') {
+            if ($initial->getName() === self::DEV_PACKAGE) {
                 $this->linkBaseYiiFiles();
             }
         };
@@ -94,7 +94,7 @@ class Installer extends LibraryInstaller
             // remove the package from yiisoft/extensions.php
             $this->removePackage($package);
             // remove links for Yii.php
-            if ($package->getName() == 'yiisoft/yii2-dev') {
+            if ($package->getName() === self::DEV_PACKAGE) {
                 $this->removeBaseYiiFiles();
             }
         };
@@ -118,9 +118,9 @@ class Installer extends LibraryInstaller
             'version' => $package->getVersion(),
         ];
 
-        $alias = $this->generateDefaultAlias($package);
-        if (!empty($alias)) {
-            $extension['alias'] = $alias;
+        $aliases = $this->generateDefaultAliases($package);
+        if (!empty($aliases)) {
+            $extension['alias'] = $aliases;
         }
         $extra = $package->getExtra();
         if (isset($extra[self::EXTRA_BOOTSTRAP])) {
@@ -132,46 +132,49 @@ class Installer extends LibraryInstaller
         $this->saveExtensions($extensions);
     }
 
-    protected function generateDefaultAlias(PackageInterface $package)
+    /**
+     * @param string $ns
+     * @param string $path
+     * @param array &$aliases
+     */
+    protected function addAlias($ns, $path, &$aliases)
     {
-        $fs = new Filesystem;
-        $vendorDir = $fs->normalizePath($this->vendorDir);
+        $alias = '@' . str_replace('\\', '/', trim($ns, '\\'));
+        if (!$this->filesystem->isAbsolutePath($path)) {
+            $path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
+        }
+        $path = $this->filesystem->normalizePath($path);
+        if (strpos($path . '/', $this->vendorDir . '/') === 0) {
+            $aliases[$alias] = str_replace($this->vendorDir . '/', '<vendor-dir>/', $path);
+        } else {
+            $aliases[$alias] = $path;
+        }
+    }
+    
+    protected function generateDefaultAliases(PackageInterface $package)
+    {
+        $this->initializeVendorDir();
         $autoload = $package->getAutoload();
-
         $aliases = [];
 
         if (!empty($autoload['psr-0'])) {
-            foreach ($autoload['psr-0'] as $name => $path) {
-                $name = str_replace('\\', '/', trim($name, '\\'));
-                if (!$fs->isAbsolutePath($path)) {
-                    $path = $this->vendorDir . '/' . $package->getPrettyName() . '/' . $path;
+            foreach ($autoload['psr-0'] as $ns => $path) {
+              if (is_file($path)) {
+                    // ignore psr-0 autoload specifications with single classes
+                    continue;
                 }
-                $path = $fs->normalizePath($path);
-                if (strpos($path . '/', $vendorDir . '/') === 0) {
-                    $aliases["@$name"] = '<vendor-dir>' . substr($path, strlen($vendorDir)) . '/' . $name;
-                } else {
-                    $aliases["@$name"] = $path . '/' . $name;
-                }
+                $this->addAlias($ns, $path, $aliases);
             }
         }
 
         if (!empty($autoload['psr-4'])) {
-            foreach ($autoload['psr-4'] as $name => $path) {
+            foreach ($autoload['psr-4'] as $ns => $path) {
                 if (is_array($path)) {
                     // ignore psr-4 autoload specifications with multiple search paths
                     // we can not convert them into aliases as they are ambiguous
                     continue;
                 }
-                $name = str_replace('\\', '/', trim($name, '\\'));
-                if (!$fs->isAbsolutePath($path)) {
-                    $path = $this->vendorDir . '/' . $package->getPrettyName() . '/' . $path;
-                }
-                $path = $fs->normalizePath($path);
-                if (strpos($path . '/', $vendorDir . '/') === 0) {
-                    $aliases["@$name"] = '<vendor-dir>' . substr($path, strlen($vendorDir));
-                } else {
-                    $aliases["@$name"] = $path;
-                }
+                $this->addAlias($ns, $path, $aliases);
             }
         }
 
@@ -187,6 +190,7 @@ class Installer extends LibraryInstaller
 
     protected function loadExtensions()
     {
+        $this->initializeVendorDir();
         $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
         if (!is_file($file)) {
             return [];
@@ -195,33 +199,17 @@ class Installer extends LibraryInstaller
         if (function_exists('opcache_invalidate')) {
             @opcache_invalidate($file, true);
         }
-        $extensions = require($file);
 
-        $vendorDir = str_replace('\\', '/', $this->vendorDir);
-        $n = strlen($vendorDir);
-
-        foreach ($extensions as &$extension) {
-            if (isset($extension['alias'])) {
-                foreach ($extension['alias'] as $alias => $path) {
-                    $path = str_replace('\\', '/', $path);
-                    if (strpos($path . '/', $vendorDir . '/') === 0) {
-                        $extension['alias'][$alias] = '<vendor-dir>' . substr($path, $n);
-                    }
-                }
-            }
-        }
-
-        return $extensions;
+        return (array) require($file);
     }
 
     protected function saveExtensions(array $extensions)
     {
+        $this->initializeVendorDir();
         $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
-        if (!file_exists(dirname($file))) {
-            mkdir(dirname($file), 0777, true);
-        }
-        $array = str_replace("'<vendor-dir>", '$vendorDir . \'', var_export($extensions, true));
-        file_put_contents($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\n\nreturn $array;\n");
+        $this->filesystem->ensureDirectoryExists(dirname($file));
+        $array = str_replace("'<vendor-dir>/", '$vendorDir . \'/', var_export($extensions, true));
+        $this->filesystem->filePutContentsIfModified($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\nreturn $array;\n");
         // invalidate opcache of extensions.php if exists
         if (function_exists('opcache_invalidate')) {
             @opcache_invalidate($file, true);
@@ -231,9 +219,7 @@ class Installer extends LibraryInstaller
     protected function linkBaseYiiFiles()
     {
         $yiiDir = $this->vendorDir . '/yiisoft/yii2';
-        if (!file_exists($yiiDir)) {
-            mkdir($yiiDir, 0777, true);
-        }
+        $this->filesystem->ensureDirectoryExists($yiiDir);
         foreach (['Yii.php', 'BaseYii.php', 'classes.php'] as $file) {
             file_put_contents($yiiDir . '/' . $file, <<<EOF
 <?php
@@ -260,9 +246,7 @@ EOF
                 unlink($yiiDir . '/' . $file);
             }
         }
-        if (file_exists($yiiDir)) {
-            rmdir($yiiDir);
-        }
+        $this->filesystem->rmdir($yiiDir);
     }
 
     /**
@@ -326,12 +310,15 @@ EOF
     }
 
     /**
-     * Generates a cookie validation key for every app config listed in "config" in extra section.
+     * Generates a cookie validation key for every application configuration in "extra" section.
      * You can provide one or multiple parameters as the configuration files which need to have validation key inserted.
      */
     public static function generateCookieValidationKey()
     {
         $configs = func_get_args();
+        if (count($configs) === 1 && is_array($configs[0])) {
+            $configs = $configs[0];
+        }
         $key = self::generateRandomString();
         foreach ($configs as $config) {
             if (is_file($config)) {
@@ -345,12 +332,14 @@ EOF
 
     protected static function generateRandomString()
     {
-        if (!extension_loaded('openssl')) {
+        if (function_exists('random_bytes')) {
+            return bin2hex(random_bytes(16));
+        }
+
+        if (!function_exists('openssl_random_pseudo_bytes')) {
             throw new \Exception('The OpenSSL PHP extension is required by Yii2.');
         }
-        $length = 32;
-        $bytes = openssl_random_pseudo_bytes($length);
-        return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
+        return bin2hex(openssl_random_pseudo_bytes(16));
     }
 
     /**
@@ -381,9 +370,7 @@ EOF
             }
 
             try {
-                if (!is_dir(dirname($target[0]))) {
-                    mkdir(dirname($target[0]), 0777, true);
-                }
+                $this->filesystem->ensureDirectoryExists(dirname($target[0]));
                 if (copy($source, $target[0])) {
                     echo "done.\n";
                 }
