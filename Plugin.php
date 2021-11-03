@@ -45,14 +45,22 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function activate(Composer $composer, IOInterface $io)
     {
+        // Global assets repository
+        $repositoryManager = $composer->getRepositoryManager();
+        $repositoryManager->addRepository($repositoryManager->createRepository(
+            'composer',
+            ['url' => 'https://asset-packagist.org'],
+            'asset-packagist.org'
+        ));
+
         $this->_installer = new Installer($io, $composer);
         $composer->getInstallationManager()->addInstaller($this->_installer);
+
         $this->_vendorDir = rtrim($composer->getConfig()->get('vendor-dir'), '/');
-        $file = $this->_vendorDir . '/yiisoft/extensions.php';
-        if (!is_file($file)) {
-            @mkdir(dirname($file), 0777, true);
-            file_put_contents($file, "<?php\n\nreturn [];\n");
-        }
+
+        $yiiDir = $this->_vendorDir . '/yiisoft';
+        $this->filesystem->ensureDirectoryExists($yiiDir);
+        $this->filesystem->filePutContentsIfModified($yiiDir . '/extensions.php', "<?php\n\nreturn [];\n");
     }
 
     /**
