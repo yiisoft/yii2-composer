@@ -58,9 +58,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         $this->_vendorDir = rtrim($composer->getConfig()->get('vendor-dir'), '/');
 
-        $yiiDir = $this->_vendorDir . '/yiisoft';
-        $this->filesystem->ensureDirectoryExists($yiiDir);
-        $this->filesystem->filePutContentsIfModified($yiiDir . '/extensions.php', "<?php\n\nreturn [];\n");
+        $file = $this->_vendorDir . '/' . Installer::EXTENSION_FILE;
+        $this->filesystem->ensureDirectoryExists(dirname($file));
+        $this->filesystem->filePutContentsIfModified($file, "<?php\n\nreturn [];\n");
     }
 
     /**
