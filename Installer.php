@@ -118,7 +118,7 @@ class Installer extends LibraryInstaller
             'version' => $package->getVersion(),
         ];
 
-        $aliases = $this->generateDefaultAliases($package);
+        $aliases = $this->generateDefaultAlias($package);
         if (!empty($aliases)) {
             $extension['alias'] = $aliases;
         }
@@ -133,37 +133,33 @@ class Installer extends LibraryInstaller
     }
 
     /**
+     * @param string $installPath
      * @param string $ns
      * @param string $path
      * @param array &$aliases
      */
-    protected function addAlias($ns, $path, &$aliases)
+    protected function addDefaultAlias($installPath, $ns, $path, &$aliases)
     {
-        $alias = '@' . str_replace('\\', '/', trim($ns, '\\'));
         if (!$this->filesystem->isAbsolutePath($path)) {
-            $path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
+            $path = $installPath . '/' . $path;
         }
         $path = $this->filesystem->normalizePath($path);
-        if (strpos($path . '/', $this->vendorDir . '/') === 0) {
-            $aliases[$alias] = str_replace($this->vendorDir . '/', '<vendor-dir>/', $path);
-        } else {
-            $aliases[$alias] = $path;
+        // ignore single class/file
+        if (is_dir($path)) {
+            $alias = '@' . str_replace('\\', '/', trim($ns, '\\'));
+            $aliases[$alias] = $this->filesystem->normalizePath($path);
         }
     }
     
-    protected function generateDefaultAliases(PackageInterface $package)
+    protected function generateDefaultAlias(PackageInterface $package)
     {
-        $this->initializeVendorDir();
+        $installPath = $this->getInstallPath($package);
         $autoload = $package->getAutoload();
         $aliases = [];
 
         if (!empty($autoload['psr-0'])) {
             foreach ($autoload['psr-0'] as $ns => $path) {
-              if (is_file($path)) {
-                    // ignore psr-0 autoload specifications with single classes
-                    continue;
-                }
-                $this->addAlias($ns, $path, $aliases);
+                $this->addDefaultAlias($installPath, $ns, $path, $aliases);
             }
         }
 
@@ -174,7 +170,7 @@ class Installer extends LibraryInstaller
                     // we can not convert them into aliases as they are ambiguous
                     continue;
                 }
-                $this->addAlias($ns, $path, $aliases);
+                $this->addDefaultAlias($installPath, $ns, $path, $aliases);
             }
         }
 
@@ -190,14 +186,9 @@ class Installer extends LibraryInstaller
 
     protected function loadExtensions()
     {
-        $this->initializeVendorDir();
         $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
         if (!is_file($file)) {
             return [];
-        }
-        // invalidate opcache of extensions.php if exists
-        if (function_exists('opcache_invalidate')) {
-            @opcache_invalidate($file, true);
         }
 
         return (array) require($file);
@@ -205,15 +196,14 @@ class Installer extends LibraryInstaller
 
     protected function saveExtensions(array $extensions)
     {
-        $this->initializeVendorDir();
         $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
         $this->filesystem->ensureDirectoryExists(dirname($file));
-        $array = str_replace("'<vendor-dir>/", '$vendorDir . \'/', var_export($extensions, true));
-        $this->filesystem->filePutContentsIfModified($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\nreturn $array;\n");
+        $array = str_replace("'$this->vendorDir/", '$vendorDir . \'/', var_export($extensions, true));
         // invalidate opcache of extensions.php if exists
         if (function_exists('opcache_invalidate')) {
-            @opcache_invalidate($file, true);
+            opcache_invalidate($file, true);
         }
+        $this->filesystem->filePutContentsIfModified($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\nreturn $array;\n");
     }
 
     protected function linkBaseYiiFiles()
@@ -241,6 +231,7 @@ EOF
     protected function removeBaseYiiFiles()
     {
         $yiiDir = $this->vendorDir . '/yiisoft/yii2';
+        $this->filesystem->ensureDirectoryExists($yiiDir);
         foreach (['Yii.php', 'BaseYii.php', 'classes.php'] as $file) {
             if (file_exists($yiiDir . '/' . $file)) {
                 unlink($yiiDir . '/' . $file);
@@ -295,7 +286,7 @@ EOF
     {
         foreach ($paths as $path => $permission) {
             echo "chmod('$path', $permission)...";
-            if (is_dir($path) || is_file($path)) {
+            if (file_exists($path)) {
                 try {
                     if (chmod($path, octdec($permission))) {
                         echo "done.\n";
@@ -362,11 +353,13 @@ EOF
                 continue;
             }
 
-            if (is_file($target[0]) && empty($target[1])) {
-                echo "target file exists - skip.\n";
-                continue;
-            } elseif (is_file($target[0]) && !empty($target[1])) {
-                echo "target file exists - overwrite - ";
+            if (is_file($target[0])) {
+                if (empty($target[1])) {
+                    echo "target file exists - skip.\n";
+                    continue;
+                } else {
+                    echo "target file exists - overwrite - ";
+                }
             }
 
             try {
