@@ -54,19 +54,19 @@ jobs:
         run: composer require --dev "composer/composer:${{ matrix.composer }}" --update-with-dependencies
 
       - name: Run tests with phpunit
-        if: matrix.php != '7.4'
+        if: matrix.php < '7.4'
         run: |
           vendor/bin/phpunit --verbose --colors=always
           cd tests/scripts && sh run.sh
 
       - name: Run tests with phpunit
-        if: matrix.php == '7.4'
+        if: matrix.php > '7.4'
         run: |
           vendor/bin/phpunit --verbose --coverage-clover=clover.xml --colors=always
           cd tests/scripts && sh run.sh
 
       - name: Upload code coverage scrutinizer
-        if: matrix.php == '7.4'
+        if: matrix.php > '7.4'
         run: |
           wget https://scrutinizer-ci.com/ocular.phar
           php ocular.phar code-coverage:upload --format=php-clover coverage.clover
