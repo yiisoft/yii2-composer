@@ -30,7 +30,7 @@ jobs:
           - "8.0"
 
         composer:
-          - "2.*"
+          - "2.0.*"
 
     steps:
       - name: Configure git
