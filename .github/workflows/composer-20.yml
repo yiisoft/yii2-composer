@@ -2,14 +2,14 @@ on:
   - pull_request
   - push
 
-name: composer-110
+name: composer-20
 
 jobs:
   tests:
     name: PHP-${{ matrix.php }}-${{ matrix.os }}
 
     env:
-      key: cache-v1
+      key: cache-v2
 
     runs-on: ${{ matrix.os }}
 
