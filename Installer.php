@@ -199,11 +199,11 @@ class Installer extends LibraryInstaller
         $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
         $this->filesystem->ensureDirectoryExists(dirname($file));
         $array = str_replace("'$this->vendorDir/", '$vendorDir . \'/', var_export($extensions, true));
+        $this->filesystem->filePutContentsIfModified($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\nreturn $array;\n");
         // invalidate opcache of extensions.php if exists
         if (function_exists('opcache_invalidate')) {
             opcache_invalidate($file, true);
         }
-        $this->filesystem->filePutContentsIfModified($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\nreturn $array;\n");
     }
 
     protected function linkBaseYiiFiles()
