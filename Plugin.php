@@ -45,14 +45,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function activate(Composer $composer, IOInterface $io)
     {
-        // Add assets repository globally
-        $repositoryManager = $composer->getRepositoryManager();
-        $repositoryManager->addRepository($repositoryManager->createRepository(
-            'composer',
-            ['url' => 'https://asset-packagist.org'],
-            'assets'
-        ));
-
         $this->_installer = new Installer($io, $composer);
         $composer->getInstallationManager()->addInstaller($this->_installer);
 
