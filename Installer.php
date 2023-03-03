@@ -345,12 +345,22 @@ EOF
 
     protected static function generateRandomString()
     {
-        if (!extension_loaded('openssl')) {
-            throw new \Exception('The OpenSSL PHP extension is required by Yii2.');
-        }
         $length = 32;
-        $bytes = openssl_random_pseudo_bytes($length);
+        $bytes = self::generateRandomBytes($length);
         return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
+    }
+
+    protected static function generateRandomBytes($length)
+    {
+        if (function_exists('random_bytes')) {
+            return random_bytes($length);
+        }
+
+        if (extension_loaded('openssl')) {
+            return openssl_random_pseudo_bytes($length);
+        }
+
+        throw new \Exception('PHP >= 7.0 or the OpenSSL PHP extension is required by Yii2.');
     }
 
     /**
