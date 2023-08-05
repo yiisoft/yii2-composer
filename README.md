@@ -6,7 +6,7 @@
     <br>
 </p>
 
-This is the composer installer for [Yii framework 2.0](http://www.yiiframework.com) extensions.
+This is the composer installer for [Yii framework 2.0](https://www.yiiframework.com) extensions.
 It implements a new composer package type named `yii2-extension`,
 which should be used by all Yii 2 extensions if they are distributed as composer packages.
 
