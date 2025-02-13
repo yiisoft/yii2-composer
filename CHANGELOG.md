@@ -1,7 +1,7 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
-2.0.11 under development
+2.0.11 February 13, 2025
 ------------------------
 
 - Enh #38: Use `random_bytes` instead of `openssl_random_pseudo_bytes` if available (fetus_hina)
