@@ -62,9 +62,6 @@ jobs:
           restore-keys: |
             php${{ matrix.php }}-composer-
 
-      - name: Install composer
-        run: composer require --dev "composer/composer:${{ matrix.composer }}" --update-with-dependencies
-
       - name: Run tests with phpunit
         run: |
           vendor/bin/phpunit --verbose --coverage-clover=coverage.xml --colors=always
