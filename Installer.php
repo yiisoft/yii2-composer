@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,9 +22,8 @@ use React\Promise\PromiseInterface;
  */
 class Installer extends LibraryInstaller
 {
-    const EXTRA_BOOTSTRAP = 'bootstrap';
-    const EXTENSION_FILE = 'yiisoft/extensions.php';
-
+    public const EXTRA_BOOTSTRAP = 'bootstrap';
+    public const EXTENSION_FILE = 'yiisoft/extensions.php';
 
     /**
      * @inheritdoc
@@ -134,7 +134,7 @@ class Installer extends LibraryInstaller
 
     protected function generateDefaultAlias(PackageInterface $package)
     {
-        $fs = new Filesystem;
+        $fs = new Filesystem();
         $vendorDir = $fs->normalizePath($this->vendorDir);
         $autoload = $package->getAutoload();
 
@@ -387,7 +387,7 @@ EOF
                 echo "target file exists - skip.\n";
                 continue;
             } elseif (is_file($target[0]) && !empty($target[1])) {
-                echo "target file exists - overwrite - ";
+                echo 'target file exists - overwrite - ';
             }
 
             try {

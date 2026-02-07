@@ -1,6 +1,20 @@
 on:
-  - pull_request
-  - push
+  pull_request: &ignore-paths
+    paths-ignore:
+      - 'docs/**'
+      - '.github/CONTRIBUTING.md'
+      - '.github/FUNDING.yml'
+      - '.github/SECURITY.md'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - '.editorconfig'
+      - 'docker-compose.yml'
+      - 'Makefile'
+
+  push: *ignore-paths
 
 name: build
 
@@ -19,15 +33,13 @@ jobs:
           - ubuntu-latest
 
         php:
-          - "5.4"
-          - "5.5"
-          - "5.6"
-          - "7.0"
-          - "7.1"
-          - "7.2"
-          - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
+          - "8.2"
+          - "8.3"
+          - "8.4"
+          - "8.5"
 
         composer:
           - "dev-master"
@@ -54,19 +66,14 @@ jobs:
         run: composer require --dev "composer/composer:${{ matrix.composer }}" --update-with-dependencies
 
       - name: Run tests with phpunit
-        if: matrix.php != '7.4'
-        run: |
-          vendor/bin/phpunit --verbose --colors=always
-          cd tests/scripts && sh run.sh
-
-      - name: Run tests with phpunit
         if: matrix.php == '7.4'
         run: |
-          vendor/bin/phpunit --verbose --coverage-clover=clover.xml --colors=always
+          vendor/bin/phpunit --verbose --coverage-clover=coverage.xml --colors=always
           cd tests/scripts && sh run.sh
 
-      - name: Upload code coverage scrutinizer
-        if: matrix.php == '7.4'
-        run: |
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+      - name: Upload coverage to Codecov.
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}

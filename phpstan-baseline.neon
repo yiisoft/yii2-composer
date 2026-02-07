@@ -1,0 +1,451 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and array\<string\>\|string results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:addPackage\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:copyFiles\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:copyFiles\(\) has parameter \$paths with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:generateCookieValidationKey\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:generateDefaultAlias\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:generateRandomBytes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:generateRandomBytes\(\) has parameter \$length with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:generateRandomString\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:install\(\) should return React\\Promise\\PromiseInterface\<void\|null\>\|null but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:linkBaseYiiFiles\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:loadExtensions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:postCreateProject\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:postInstall\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:removeBaseYiiFiles\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:removePackage\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:runCommands\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:saveExtensions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:saveExtensions\(\) has parameter \$extensions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:setPermission\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:setPermission\(\) has parameter \$paths with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:supports\(\) has parameter \$packageType with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:uninstall\(\) should return React\\Promise\\PromiseInterface\<void\|null\>\|null but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Method yii\\composer\\Installer\:\:update\(\) should return React\\Promise\\PromiseInterface\<void\|null\>\|null but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Parameter \#1 \$function of function call_user_func_array expects callable\(\)\: mixed, array\{''yii\\\\composer\\\\Installer'', \(int\|string\)\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Parameter \#1 \$path of method Composer\\Util\\Filesystem\:\:isAbsolutePath\(\) expects string, array\<string\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Parameter \#2 \$mode of function chmod expects int, float\|int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Installer.php
+
+		-
+			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Call to an undefined method Composer\\Installer\\PackageEvent\:\:getPolicy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Call to function method_exists\(\) with ''Composer\\\\Package…'' and ''isUpgrade'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method yii\\composer\\Plugin\:\:checkPackageUpdates\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method yii\\composer\\Plugin\:\:findUpgradeNotes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method yii\\composer\\Plugin\:\:getSubscribedEvents\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method yii\\composer\\Plugin\:\:printUpgradeIntro\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method yii\\composer\\Plugin\:\:printUpgradeIntro\(\) has parameter \$package with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method yii\\composer\\Plugin\:\:printUpgradeLink\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method yii\\composer\\Plugin\:\:printUpgradeLink\(\) has parameter \$package with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method yii\\composer\\Plugin\:\:showUpgradeNotes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Parameter \#2 \$subject of function preg_split expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Property yii\\composer\\Plugin\:\:\$_packageUpdates type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Plugin.php
+
+		-
+			message: '#^Method tests\\TestCase\:\:invokeMethod\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: '#^Method tests\\TestCase\:\:invokeMethod\(\) has parameter \$method with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: '#^Method tests\\TestCase\:\:invokeMethod\(\) has parameter \$object with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: '#^Access to undefined constant tests\\MockIO\:\:NORMAL\.$#'
+			identifier: classConstant.notFound
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\MockIO\:\:write\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\MockIO\:\:write\(\) has parameter \$messages with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\MockIO\:\:write\(\) has parameter \$newline with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\MockIO\:\:write\(\) has parameter \$verbosity with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\MockIO\:\:writeError\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\MockIO\:\:writeError\(\) has parameter \$messages with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\MockIO\:\:writeError\(\) has parameter \$newline with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\MockIO\:\:writeError\(\) has parameter \$verbosity with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:getPlugin\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:introProvider\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeIntro\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeIntro\(\) has parameter \$direction with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeIntro\(\) has parameter \$expected with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeIntro\(\) has parameter \$from with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeIntro\(\) has parameter \$to with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeLink\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeLink\(\) has parameter \$direction with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeLink\(\) has parameter \$from with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testPrintUpgradeLink\(\) has parameter \$to with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testUpgradeNotesAlpha\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testUpgradeNotesBrokenFile\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testUpgradeNotesFromMajor\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testUpgradeNotesFromMinorWithMinorNotes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Method tests\\UpgradeNotesTest\:\:testUpgradeNotesFromMinorWithoutMinorNotes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Property tests\\MockIO\:\:\$errorMessages has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Property tests\\MockIO\:\:\$messages has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/UpgradeNotesTest.php
+
+		-
+			message: '#^Function check_json_error\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/scripts/make_composer_json.php
+
+		-
+			message: '#^Function check_json_error\(\) has parameter \$json with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/scripts/make_composer_json.php
+
+		-
+			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/scripts/make_composer_json.php
+
+		-
+			message: '#^Parameter \#2 \$newvalue of function ini_set expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/scripts/make_composer_json.php

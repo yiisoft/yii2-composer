@@ -15,6 +15,7 @@ For license information check the [LICENSE](LICENSE.md)-file.
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-composer/v/stable.png)](https://packagist.org/packages/yiisoft/yii2-composer)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2-composer/downloads.png)](https://packagist.org/packages/yiisoft/yii2-composer)
 [![Build status](https://github.com/yiisoft/yii2-composer/workflows/build/badge.svg)](https://github.com/yiisoft/yii2-composer/actions?query=workflow%3Abuild)
+[![codecov](https://codecov.io/gh/yiisoft/yii2-composer/graph/badge.svg)](https://codecov.io/gh/yiisoft/yii2-composer)
 
 
 Usage
