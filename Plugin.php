@@ -199,8 +199,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $io->write("\n  <fg=yellow;options=bold>Seems you have "
             . ($package['direction'] === 'up' ? 'upgraded' : 'downgraded')
             . ' Yii Framework from version '
-            . $package['fromPretty'] . ' to ' . $package['toPretty'] . '.</>'
-        );
+            . $package['fromPretty'] . ' to ' . $package['toPretty'] . '.</>');
         $io->write("\n  <options=bold>Please check the upgrade notes for possible incompatible changes");
         $io->write('  and adjust your application code accordingly.</>');
     }

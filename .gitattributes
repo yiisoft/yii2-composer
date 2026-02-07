@@ -4,5 +4,4 @@
 *.neon              export-ignore
 *.yml               export-ignore
 /tests              export-ignore
-/docs               export-ignore
 /Makefile           export-ignore
