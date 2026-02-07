@@ -83,7 +83,7 @@ class UpgradeNotesTest extends TestCase
     public function testUpgradeNotesAlpha()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii2', '2.0.0-alpha']);
-        $this->assertEquals(<<<STRING
+        $this->assertEqualsWithoutLE(<<<STRING
 Upgrade from Yii 2.0.14
 -----------------------
 
@@ -121,7 +121,7 @@ STRING
     public function testUpgradeNotesFromMajor()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii2', '2.0.10']);
-        $this->assertEquals(<<<STRING
+        $this->assertEqualsWithoutLE(<<<STRING
 Upgrade from Yii 2.0.14
 -----------------------
 
@@ -149,7 +149,7 @@ STRING
     public function testUpgradeNotesFromMinorWithMinorNotes()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii2', '2.0.13.1']);
-        $this->assertEquals(<<<STRING
+        $this->assertEqualsWithoutLE(<<<STRING
 Upgrade from Yii 2.0.14
 -----------------------
 
@@ -167,7 +167,7 @@ STRING
     public function testUpgradeNotesFromMinorWithoutMinorNotes()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii2', '2.0.12.1']);
-        $this->assertEquals(<<<STRING
+        $this->assertEqualsWithoutLE(<<<STRING
 Upgrade from Yii 2.0.14
 -----------------------
 
