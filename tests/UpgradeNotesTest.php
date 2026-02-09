@@ -2,13 +2,8 @@
 
 namespace tests;
 
-use Composer\Config;
-use Composer\IO\IOInterface;
 use yii\composer\Plugin;
 
-/**
- *
- */
 class UpgradeNotesTest extends TestCase
 {
     private function getPlugin()
@@ -18,7 +13,7 @@ class UpgradeNotesTest extends TestCase
         $reflection = new \ReflectionObject($plugin);
         $property = $reflection->getProperty('_vendorDir');
         $property->setAccessible(true);
-        $property->setValue($plugin,__DIR__ . '/data');
+        $property->setValue($plugin, __DIR__ . '/data');
 
         return $plugin;
     }
@@ -46,12 +41,12 @@ class UpgradeNotesTest extends TestCase
         ]]);
         $this->assertCount(3, $io->messages);
         if ($direction === 'up') {
-            $this->assertContains('upgraded', implode("\n", $io->messages));
+            $this->assertStringContainsString('upgraded', implode("\n", $io->messages));
         } else {
-            $this->assertContains('downgraded', implode("\n", $io->messages));
+            $this->assertStringContainsString('downgraded', implode("\n", $io->messages));
         }
-        $this->assertContains($expected, implode("\n", $io->messages));
-        $this->assertContains('check the upgrade notes for possible incompatible changes', implode("\n", $io->messages));
+        $this->assertStringContainsString($expected, implode("\n", $io->messages));
+        $this->assertStringContainsString('check the upgrade notes for possible incompatible changes', implode("\n", $io->messages));
     }
 
     /**
@@ -70,25 +65,25 @@ class UpgradeNotesTest extends TestCase
             if ($to === 'dev-master') {
                 $to = 'master';
             }
-            $this->assertContains("https://github.com/yiisoft/yii2/blob/$to/framework/UPGRADE.md", implode("\n", $io->messages));
+            $this->assertStringContainsString("https://github.com/yiisoft/yii2/blob/$to/framework/UPGRADE.md", implode("\n", $io->messages));
         } else {
             if ($from === 'dev-master') {
                 $from = 'master';
             }
-            $this->assertContains("https://github.com/yiisoft/yii2/blob/$from/framework/UPGRADE.md", implode("\n", $io->messages));
+            $this->assertStringContainsString("https://github.com/yiisoft/yii2/blob/$from/framework/UPGRADE.md", implode("\n", $io->messages));
         }
     }
 
-    public function testUpgradeNotes_brokenFile()
+    public function testUpgradeNotesBrokenFile()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii3', 'dev-master']);
         $this->assertFalse($notes);
     }
 
-    public function testUpgradeNotes_alpha()
+    public function testUpgradeNotesAlpha()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii2', '2.0.0-alpha']);
-        $this->assertEquals(<<<STRING
+        $this->assertEqualsWithoutLE(<<<STRING
 Upgrade from Yii 2.0.14
 -----------------------
 
@@ -123,10 +118,10 @@ STRING
         , implode("\n", $notes));
     }
 
-    public function testUpgradeNotes_fromMajor()
+    public function testUpgradeNotesFromMajor()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii2', '2.0.10']);
-        $this->assertEquals(<<<STRING
+        $this->assertEqualsWithoutLE(<<<STRING
 Upgrade from Yii 2.0.14
 -----------------------
 
@@ -151,10 +146,10 @@ STRING
         , implode("\n", $notes));
     }
 
-    public function testUpgradeNotes_fromMinorWithMinorNotes()
+    public function testUpgradeNotesFromMinorWithMinorNotes()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii2', '2.0.13.1']);
-        $this->assertEquals(<<<STRING
+        $this->assertEqualsWithoutLE(<<<STRING
 Upgrade from Yii 2.0.14
 -----------------------
 
@@ -169,10 +164,10 @@ STRING
         , implode("\n", $notes));
     }
 
-    public function testUpgradeNotes_fromMinorWithoutMinorNotes()
+    public function testUpgradeNotesFromMinorWithoutMinorNotes()
     {
         $notes = $this->invokeMethod($this->getPlugin(), 'findUpgradeNotes', ['yiisoft/yii2', '2.0.12.1']);
-        $this->assertEquals(<<<STRING
+        $this->assertEqualsWithoutLE(<<<STRING
 Upgrade from Yii 2.0.14
 -----------------------
 
@@ -197,7 +192,7 @@ STRING
         , implode("\n", $notes));
     }
 
-    public function testIsNumericVersion()
+    public function testIsNumericVersion(): void
     {
         $plugin = new Plugin();
 

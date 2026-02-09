@@ -1,10 +1,12 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
-2.0.12 under development
+3.0.0 under development
 ------------------------
 
-- no changes in this release.
+- Enh #47: Applying Yii2 coding standards (@s1lver)
+- Enh #47: Raise min version to PHP 7.4 (@s1lver)
+- Enh #47: Raise min version `composer-plugin-api` to 2.0 (@s1lver)
 
 
 2.0.11 February 13, 2025

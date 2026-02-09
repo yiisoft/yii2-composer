@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -148,7 +149,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         // - only on upgrade, not on downgrade
         // - only if the "from" version is non-dev, otherwise we have no idea which notes to show
         if ($package['direction'] === 'up' && $this->isNumericVersion($package['fromPretty'])) {
-
             $notes = $this->findUpgradeNotes($packageName, $package['fromPretty']);
             if ($notes !== false && empty($notes)) {
                 // no relevent upgrade notes, do not show anything.
@@ -199,8 +199,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $io->write("\n  <fg=yellow;options=bold>Seems you have "
             . ($package['direction'] === 'up' ? 'upgraded' : 'downgraded')
             . ' Yii Framework from version '
-            . $package['fromPretty'] . ' to ' . $package['toPretty'] . '.</>'
-        );
+            . $package['fromPretty'] . ' to ' . $package['toPretty'] . '.</>');
         $io->write("\n  <options=bold>Please check the upgrade notes for possible incompatible changes");
         $io->write('  and adjust your application code accordingly.</>');
     }
@@ -228,7 +227,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $consuming = false;
         // whether an exact match on $fromVersion has been encountered
         $foundExactMatch = false;
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             if (preg_match('/^Upgrade from Yii ([0-9]\.[0-9]+\.?[0-9\.]*)/i', $line, $matches)) {
                 if ($matches[1] === $fromVersion) {
                     $foundExactMatch = true;
